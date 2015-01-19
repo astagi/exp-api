@@ -2,6 +2,8 @@ import json
 import requests
 from .models import Projects, Stories, Users, User
 from .requestmaker import RequestMaker
+from requests.exceptions import RequestException
+import exceptions
 
 class TaigaAPI:
 
@@ -27,11 +29,17 @@ class TaigaAPI:
             'username' : username,
             'password' : password
         }
-        response = requests.post(
-            self.host + '/api/v1/auth',
-            data=json.dumps(payload),
-            headers=headers
-        )
+        try:
+            full_url = self.host + '/api/v1/auth'
+            response = requests.post(
+                full_url,
+                data=json.dumps(payload),
+                headers=headers
+            )
+        except RequestException as e:
+            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'GET')
+        if response.status_code != 200:
+            raise exceptions.TaigaRestException(full_url, response.status_code, response.text, 'GET')
         self.token = response.json()['auth_token']
         self.raw_request = RequestMaker('/api/v1', self.host, self.token)
         self.me = User.parse(self.raw_request, response.json())

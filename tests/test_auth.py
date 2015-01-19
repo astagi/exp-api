@@ -1,5 +1,7 @@
 from taiga import TaigaAPI
+import taiga.exceptions
 import json
+import requests
 import unittest
 from mock import patch
 from .tools import create_mock_json
@@ -36,3 +38,15 @@ class TestAuth(unittest.TestCase):
         api = TaigaAPI(host='host')
         api.auth('valid_user', 'valid_password')
         self.assertEqual(api.token, 'f4k3')
+
+    @patch('taiga.client.requests')
+    def test_auth_not_success(self, requests):
+        requests.post.return_value = MockResponse(401, 'Not allowed')
+        api = TaigaAPI(host='host')
+        self.assertRaises(taiga.exceptions.TaigaRestException, api.auth, 'valid_user', 'valid_password')
+
+    @patch('taiga.client.requests.post')
+    def test_auth_connection_error(self, requests_post):
+        requests_post.side_effect = requests.RequestException()
+        api = TaigaAPI(host='host')
+        self.assertRaises(taiga.exceptions.TaigaRestException, api.auth, 'valid_user', 'valid_password')
