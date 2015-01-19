@@ -18,16 +18,20 @@ class Project(InstanceResource):
         return Project(requester, **entry)
 
     def update(self):
-        return self.requester.put('/projects/{id}', id=self.id, payload=self.to_dict())
+        self.requester.put('/projects/{id}', id=self.id, payload=self.to_dict())
+        return self
 
     def delete(self):
-        return self.requester.delete('/projects/{id}', id=self.id)
+        self.requester.delete('/projects/{id}', id=self.id)
+        return self
 
     def star(self):
-        return self.requester.post('/projects/{id}/star', id=self.id)
+        self.requester.post('/projects/{id}/star', id=self.id)
+        return self
 
     def unstar(self):
-        return self.requester.post('/projects/{id}/unstar', id=self.id)
+        self.requester.post('/projects/{id}/unstar', id=self.id)
+        return self
 
 
 class Projects(ListResource):

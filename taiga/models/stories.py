@@ -13,10 +13,12 @@ class Story(InstanceResource):
         return '{0}'.format(self.subject)
 
     def update(self):
-        return self.requester.put('/userstories/{id}', id=self.id, payload=self.to_dict())
+        self.requester.put('/userstories/{id}', id=self.id, payload=self.to_dict())
+        return self
 
     def delete(self):
-        return self.requester.delete('/userstories/{id}', id=self.id)
+        self.requester.delete('/userstories/{id}', id=self.id)
+        return self
 
 
 class Stories(ListResource):

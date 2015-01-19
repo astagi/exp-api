@@ -9,7 +9,8 @@ class User(InstanceResource):
         return '{0} ({1})'.format(self.username, self.full_name)
 
     def delete(self):
-        return self.requester.delete('/users/{id}', id=self.id)
+        self.requester.delete('/users/{id}', id=self.id)
+        return self
 
     def starred_projects(self):
         response = self.requester.get('/users/{id}/starred', id=self.id)
