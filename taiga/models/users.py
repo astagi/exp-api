@@ -21,7 +21,10 @@ class Users(ListResource):
     instance = User
 
     def list(self, project_id=''):
-        response = self.requester.get('/users')
+        if project_id:
+            response = self.requester.get('/users', query={'project_id':project_id})
+        else:
+            response = self.requester.get('/users')
         return self.parse_list(response.json())
 
     def get(self, id):

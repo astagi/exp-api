@@ -24,7 +24,10 @@ class Stories(ListResource):
     instance = Story
 
     def list(self, project_id=''):
-        response = self.requester.get('/userstories')
+        if project_id:
+            response = self.requester.get('/userstories', query={'project_id':project_id})
+        else:
+            response = self.requester.get('/userstories')
         return self.parse_list(response.json())
 
     def get(self, id):

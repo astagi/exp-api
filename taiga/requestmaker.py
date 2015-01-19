@@ -18,28 +18,32 @@ class RequestMaker(object):
         }
         return headers
 
-    def get(self, uri, **parameters):
+    def get(self, uri, query={}, **parameters):
         return requests.get(
             self.host + self.api_path + uri.format(**parameters),
-            headers=self.headers()
+            headers=self.headers(),
+            params=query
         )
 
-    def post(self, uri, payload=None, **parameters):
+    def post(self, uri, payload=None, query={}, **parameters):
         return requests.post(
             self.host + self.api_path + uri.format(**parameters),
             headers=self.headers(),
-            data=json.dumps(payload)
+            data=json.dumps(payload),
+            params=query
         )
 
-    def delete(self, uri, **parameters):
+    def delete(self, uri, query={}, **parameters):
         return requests.delete(
             self.host + self.api_path + uri.format(**parameters),
-            headers=self.headers()
+            headers=self.headers(),
+            params=query
         )
 
-    def put(self, uri, payload=None, **parameters):
+    def put(self, uri, payload=None, query={}, **parameters):
         return requests.put(
             self.host + self.api_path + uri.format(**parameters),
             headers=self.headers(),
-            data=json.dumps(payload)
+            data=json.dumps(payload),
+            params=query
         )
