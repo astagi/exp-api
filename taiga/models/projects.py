@@ -3,6 +3,8 @@ import users
 
 class Project(InstanceResource):
 
+    endpoint = 'projects'
+
     allowed_params = ['name', 'description', 'creation_template', 'is_backlog_activated',
         'is_issues_activated', 'is_kanban_activated', 'is_private', 'is_wiki_activated',
         'videoconferences', 'videoconferences_salt', 'total_milestones',
@@ -14,16 +16,8 @@ class Project(InstanceResource):
     @classmethod
     def parse(cls, requester, entry):
         if 'users' in entry:
-            entry['users'] = users.Users.parse(entry['users'], requester)
+            entry['users'] = users.Users.parse(requester, entry['users'])
         return Project(requester, **entry)
-
-    def update(self):
-        self.requester.put('/projects/{id}', id=self.id, payload=self.to_dict())
-        return self
-
-    def delete(self):
-        self.requester.delete('/projects/{id}', id=self.id)
-        return self
 
     def star(self):
         self.requester.post('/projects/{id}/star', id=self.id)
@@ -37,14 +31,6 @@ class Project(InstanceResource):
 class Projects(ListResource):
 
     instance = Project
-
-    def list(self):
-        response = self.requester.get('/projects')
-        return self.parse_list(response.json())
-
-    def get(self, id):
-        response = self.requester.get('/projects/{id}', id=id)
-        return Projects.parse(self.requester, response.json())
 
     def create(self, name, description, **attrs):
         attrs.update({'name' : name, 'description' : description})

@@ -9,15 +9,25 @@ class Resource(object):
 
 class ListResource(Resource):
 
-    def update(self):
-        raise NotImplementedError
+    def list(self, project_id=''):
+        if project_id:
+            response = self.requester.get('/{endpoint}', endpoint=self.instance.endpoint,
+                query={'project_id':project_id})
+        else:
+            response = self.requester.get('/{endpoint}', endpoint=self.instance.endpoint)
+        return self.parse_list(response.json())
 
-    def delete(self):
-        raise NotImplementedError
+    def get(self, id):
+        response = self.requester.get('/{endpoint}/{id}', endpoint=self.instance.endpoint, id=id)
+        return self.instance.parse(self.requester, response.json())
+
+    def delete(self, id):
+        self.requester.delete('/{endpoint}/{id}', endpoint=self.instance.endpoint, id=id)
+        return self
 
     @classmethod
-    def parse(cls, entries, requester):
-        """Parse a JSON object into a model instance."""
+    def parse(cls, requester, entries):
+        """Parse a JSON array into a list of model instances."""
         result_entries = []
         for entry in entries:
             result_entries.append(cls.instance.parse(requester, entry))
@@ -30,7 +40,10 @@ class ListResource(Resource):
             result_entries.append(self.instance.parse(self.requester, entry))
         return result_entries
 
+
 class InstanceResource(Resource):
+
+    endpoint = ''
 
     allowed_params = []
 
@@ -39,14 +52,14 @@ class InstanceResource(Resource):
         for key, value in six.iteritems(params):
             setattr(self, key, value)
 
-    def list(self):
-        raise NotImplementedError
+    def update(self):
+        self.requester.put('/{endpoint}/{id}', endpoint=self.endpoint,
+            id=self.id, payload=self.to_dict())
+        return self
 
-    def get(self, id):
-        raise NotImplementedError
-
-    def delete(self, id):
-        raise NotImplementedError
+    def delete(self):
+        self.requester.delete('/{endpoint}/{id}', endpoint=self.endpoint, id=self.id)
+        return self
 
     def to_dict(self):
         self_dict = {}
