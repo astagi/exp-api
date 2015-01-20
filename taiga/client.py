@@ -1,6 +1,6 @@
 import json
 import requests
-from .models import Projects, Stories, Users, User
+from .models import Projects, UserStories, Users, User
 from .requestmaker import RequestMaker
 from requests.exceptions import RequestException
 import exceptions
@@ -17,7 +17,7 @@ class TaigaAPI:
     def _init_resources(self):
         self.me.requester = self.raw_request
         self.projects = Projects(self.raw_request)
-        self.stories = Stories(self.raw_request)
+        self.userstories = UserStories(self.raw_request)
         self.users = Users(self.raw_request)
 
     def auth(self, username, password):

@@ -1,7 +1,7 @@
 from .base import InstanceResource, ListResource
 from .users import User
 
-class Story(InstanceResource):
+class UserStory(InstanceResource):
 
     allowed_params = ['assigned_to', 'backlog_order', 'blocked_note',
         'client_requirement', 'description', 'is_archived', 'is_blocked',
@@ -21,9 +21,9 @@ class Story(InstanceResource):
         return self
 
 
-class Stories(ListResource):
+class UserStories(ListResource):
 
-    instance = Story
+    instance = UserStory
 
     def list(self, project_id=''):
         if project_id:
