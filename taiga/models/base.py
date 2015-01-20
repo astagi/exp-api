@@ -17,6 +17,24 @@ class ListResource(Resource):
             response = self.requester.get('/{endpoint}', endpoint=self.instance.endpoint)
         return self.parse_list(response.json())
 
+    def query(self, project_id='', **queryparams):
+        objects = self.list()
+        result_objects = []
+        for obj in objects:
+            add = True
+            for key, value in six.iteritems(queryparams):
+                try:
+                    if obj.__dict__[key] != value:
+                        add = False
+                        break
+                except KeyError:
+                    add = False
+                    break
+            if add:
+                result_objects.append(obj)
+        return result_objects
+
+
     def get(self, id):
         response = self.requester.get('/{endpoint}/{id}', endpoint=self.instance.endpoint, id=id)
         return self.instance.parse(self.requester, response.json())
