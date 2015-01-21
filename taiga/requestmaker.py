@@ -1,6 +1,6 @@
 import json
 import requests
-import exceptions
+from . import exceptions
 from requests.exceptions import RequestException
 
 class RequestMakerException(Exception):

@@ -3,7 +3,7 @@ import requests
 from .models import Projects, UserStories, Users, User
 from .requestmaker import RequestMaker
 from requests.exceptions import RequestException
-import exceptions
+from . import exceptions
 
 class TaigaAPI:
 
