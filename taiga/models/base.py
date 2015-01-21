@@ -9,16 +9,13 @@ class Resource(object):
 
 class ListResource(Resource):
 
-    def list(self, project_id=''):
+    def list(self, project_id='', **queryparams):
         if project_id:
-            response = self.requester.get('/{endpoint}', endpoint=self.instance.endpoint,
+            result = self.requester.get('/{endpoint}', endpoint=self.instance.endpoint,
                 query={'project_id':project_id})
         else:
-            response = self.requester.get('/{endpoint}', endpoint=self.instance.endpoint)
-        return self.parse_list(response.json())
-
-    def query(self, project_id='', **queryparams):
-        objects = self.list()
+            result = self.requester.get('/{endpoint}', endpoint=self.instance.endpoint)
+        objects = self.parse_list(result.json())
         result_objects = []
         for obj in objects:
             add = True
@@ -33,7 +30,6 @@ class ListResource(Resource):
             if add:
                 result_objects.append(obj)
         return result_objects
-
 
     def get(self, id):
         response = self.requester.get('/{endpoint}/{id}', endpoint=self.instance.endpoint, id=id)

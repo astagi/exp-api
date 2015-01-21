@@ -5,6 +5,16 @@ import json
 import requests
 import unittest
 from mock import patch
+from .tools import create_mock_json
+
+class MockResponse():
+    def __init__(self, status_code, text):
+        self.status_code = status_code
+        self.text = text
+
+    def json(self):
+        return json.loads(self.text)
+
 
 class Fake(InstanceResource):
 
@@ -69,23 +79,19 @@ class TestModelBase(unittest.TestCase):
         mock_requestmaker_get.assert_called_with('/{endpoint}', endpoint='fakes',
             query={'project_id':1})
 
-    @patch('taiga.models.base.ListResource.list')
-    def test_call_model_base_query(self, mock_list):
+    @patch('taiga.requestmaker.RequestMaker.get')
+    def test_call_model_base_query(self, mock_requestmaker_get):
         rm = RequestMaker('/api/v1', 'fakehost', 'faketoken')
-        mock_list.return_value = [
-            Fake(rm, param1='param1'),
-            Fake(rm, param2='param2'),
-            Fake(rm, param1='param1', param2='param2')
-        ]
+        mock_requestmaker_get.return_value = MockResponse(200, create_mock_json('tests/resources/fake_objects.json'))
         fakes = Fakes(rm)
-        objects = fakes.query(param1='param1')
+        objects = fakes.list(param1='param1')
         self.assertEqual(len(objects), 2)
 
-        objects = fakes.query(param2='param2')
+        objects = fakes.list(param2='param2')
         self.assertEqual(len(objects), 2)
 
-        objects = fakes.query(param1='param1', param2='param2')
+        objects = fakes.list(param1='param1', param2='param2')
         self.assertEqual(len(objects), 1)
 
-        objects = fakes.query(param2='paramfake')
+        objects = fakes.list(param2='paramfake')
         self.assertEqual(len(objects), 0)
