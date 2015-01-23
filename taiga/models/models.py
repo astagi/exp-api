@@ -1,5 +1,24 @@
 from .base import InstanceResource, ListResource
 
+class User(InstanceResource):
+
+    endpoint = 'users'
+
+    allowed_params = ['']
+
+    def __str__(self):
+        return '{0} ({1})'.format(self.username, self.full_name)
+
+    def starred_projects(self):
+        response = self.requester.get('/users/{id}/starred', id=self.id)
+        return Projects.parse(self.requester, response.json())
+
+
+class Users(ListResource):
+
+    instance = User
+
+
 class Project(InstanceResource):
 
     endpoint = 'projects'
@@ -9,14 +28,10 @@ class Project(InstanceResource):
         'videoconferences', 'videoconferences_salt', 'total_milestones',
         'total_story_points']
 
+    parser = {'users' : Users}
+
     def __str__(self):
         return '{0}'.format(self.name)
-
-    @classmethod
-    def parse(cls, requester, entry):
-        if 'users' in entry:
-            entry['users'] = Users.parse(requester, entry['users'])
-        return Project(requester, **entry)
 
     def star(self):
         self.requester.post('/projects/{id}/star', id=self.id)
@@ -35,25 +50,6 @@ class Projects(ListResource):
         attrs.update({'name' : name, 'description' : description})
         response = self.requester.post('/projects', payload=attrs)
         return Project.parse(self.requester, response.json())
-
-
-class User(InstanceResource):
-
-    endpoint = 'users'
-
-    allowed_params = ['']
-
-    def __str__(self):
-        return '{0} ({1})'.format(self.username, self.full_name)
-
-    def starred_projects(self):
-        response = self.requester.get('/users/{id}/starred', id=self.id)
-        return Projects.parse(self.requester, response.json())
-
-
-class Users(ListResource):
-
-    instance = User
 
 
 class UserStory(InstanceResource):

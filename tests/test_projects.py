@@ -1,5 +1,6 @@
 from taiga.requestmaker import RequestMaker, RequestMakerException
 from taiga.models.base import InstanceResource, ListResource
+from taiga.models import User
 from taiga import TaigaAPI
 import taiga.exceptions
 import json
@@ -41,4 +42,5 @@ class TestProjects(unittest.TestCase):
         projects = api.projects.list()
         self.assertEqual(projects[0].description, 'test 1 on real taiga')
         self.assertEqual(len(projects), 1)
-
+        self.assertEqual(len(projects[0].users), 1)
+        self.assertTrue(isinstance(projects[0].users[0], User))

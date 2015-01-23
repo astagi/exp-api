@@ -59,6 +59,8 @@ class InstanceResource(Resource):
 
     endpoint = ''
 
+    parser = {}
+
     allowed_params = []
 
     def __init__(self, requester, **params):
@@ -87,8 +89,10 @@ class InstanceResource(Resource):
         """Parse a JSON object into a model instance."""
         if entry is None:
             return ''
-        entry_str_dict = dict([(str(key), value) for key, value in entry.items()])
-        return cls(requester, **entry_str_dict)
+        else:
+            for key_to_parse, cls_to_parse in six.iteritems(cls.parser):
+                entry[key_to_parse] = cls_to_parse.parse(requester, entry[key_to_parse])
+        return cls(requester, **entry)
 
     def __repr__(self):
         return str(self)
