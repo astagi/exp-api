@@ -1,6 +1,6 @@
 import json
 import requests
-from .models import Projects, UserStories, Users, User
+from .models import Projects, UserStories, Users, Issues, Tasks
 from .requestmaker import RequestMaker
 from requests.exceptions import RequestException
 from . import exceptions
@@ -15,10 +15,11 @@ class TaigaAPI:
             self._init_resources()
 
     def _init_resources(self):
-        self.me.requester = self.raw_request
         self.projects = Projects(self.raw_request)
         self.userstories = UserStories(self.raw_request)
         self.users = Users(self.raw_request)
+        self.issues = Issues(self.raw_request)
+        self.tasks = Tasks(self.raw_request)
 
     def auth(self, username, password):
         headers = {
@@ -42,5 +43,4 @@ class TaigaAPI:
             raise exceptions.TaigaRestException(full_url, response.status_code, response.text, 'GET')
         self.token = response.json()['auth_token']
         self.raw_request = RequestMaker('/api/v1', self.host, self.token)
-        self.me = User.parse(self.raw_request, response.json())
         self._init_resources()

@@ -38,17 +38,26 @@ class RequestMaker(object):
         else:
             raise exceptions.TaigaRestException(full_url, result.status_code, result.text, 'GET')
 
-    def post(self, uri, payload=None, query={}, **parameters):
+    def post(self, uri, payload=None, query={}, files={}, **parameters):
+        if files:
+            headers = {
+                'Authorization' : 'Bearer {0}'.format(self.token)
+            }
+            data = payload
+        else:
+            headers=self.headers()
+            data = json.dumps(payload)
         try:
             full_url = self.host + self.api_path + uri.format(**parameters)
             result = requests.post(
                 full_url,
-                headers=self.headers(),
-                data=json.dumps(payload),
-                params=query
+                headers=headers,
+                data=data,
+                params=query,
+                files=files
             )
         except RequestException as e:
-            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'GET')
+            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'POST')
         if not self.is_bad_response(result):
             return result
         else:
@@ -63,7 +72,7 @@ class RequestMaker(object):
                 params=query
             )
         except RequestException as e:
-            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'GET')
+            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'DELETE')
         if not self.is_bad_response(result):
             return result
         else:
@@ -79,7 +88,7 @@ class RequestMaker(object):
                 params=query
             )
         except RequestException as e:
-            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'GET')
+            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'PUT')
         if not self.is_bad_response(result):
             return result
         else:

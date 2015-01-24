@@ -4,3 +4,7 @@ from .models import Project
 from .models import Projects
 from .models import UserStory
 from .models import UserStories
+from .models import Task
+from .models import Tasks
+from .models import Issue
+from .models import Issues
