@@ -48,15 +48,8 @@ class Attachment(InstanceResource):
 
 class Attachments(ListResource):
 
-    def __init__(self, requester, project, obj_id):
-        super(Attachments, self).__init__(
-            requester,
-        )
-        self.project = project
-        self.obj_id = obj_id
-
-    def create(self, subject, attached_file, **attrs):
-        attrs.update({'project' : self.project, 'object_id' : self.obj_id})
+    def create(self, project_id, object_id, subject, attached_file, **attrs):
+        attrs.update({'project' : project_id, 'object_id' : object_id})
         response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint, 
             files={'attached_file' : open(attached_file, 'rb')}, payload=attrs)
         return self.instance.parse(self.requester, response.json())
@@ -82,12 +75,15 @@ class UserStory(InstanceResource):
         'sprint_order', 'status', 'subject', 'tags', 'team_requirement',
         'watchers']
 
-    def __init__(self, requester, **params):
-        super(UserStory, self).__init__(
-            requester,
-            **params
-        )
-        self.attachments = UserStoryAttachments(requester, self.project, self.id)
+    def add_task(self, subject, status, **attrs):
+        return Tasks(self.requester).create(self.project, subject, status, user_story=self.id)
+
+    def list_tasks():
+        return Tasks(self.requester).list()
+
+    def attach(self, subject, attached_file, **attrs):
+        return UserStoryAttachments(self.requester).create(self.project, self.id, 
+            subject, attached_file, **attrs)
 
     def __str__(self):
         return '{0}'.format(self.subject)
@@ -143,12 +139,9 @@ class Task(InstanceResource):
         'tags', 'us_order', 'taskboard_order', 'is_iocaine','external_reference',
         'watchers']
 
-    def __init__(self, requester, **params):
-        super(Task, self).__init__(
-            requester,
-            **params
-        )
-        self.attachments = TaskAttachments(requester, self.project, self.id)
+    def attach(self, subject, attached_file, **attrs):
+        return TaskAttachments(self.requester).create(self.project, self.id, 
+            subject, attached_file, **attrs)
 
     def __str__(self):
         return '{0}'.format(self.subject)
@@ -221,13 +214,6 @@ class Issue(InstanceResource):
 
     endpoint = 'issues'
 
-    def __init__(self, requester, **params):
-        super(Issue, self).__init__(
-            requester,
-            **params
-        )
-        self.attachments = IssueAttachments(requester, self.project, self.id)
-
     allowed_params = ['assigned_to', 'blocked_note', 'description', 'is_blocked',
         'is_closed', 'milestone', 'project', 'status', 'severity', 'priority', 'type',
         'subject', 'tags', 'watchers']
@@ -239,6 +225,10 @@ class Issue(InstanceResource):
     def downvote(self):
         self.requester.post('/{endpoint}/{id}/downvote', endpoint=self.endpoint, id=self.id)
         return self
+
+    def attach(self, subject, attached_file, **attrs):
+        return IssueAttachments(self.requester).create(self.project, self.id, 
+            subject, attached_file, **attrs)
 
     def __str__(self):
         return '{0}'.format(self.subject)
@@ -303,6 +293,19 @@ class Project(InstanceResource):
     def unstar(self):
         self.requester.post('/{endpoint}/{id}/unstar', endpoint=self.endpoint, id=self.id)
         return self
+
+    def add_user_story(self, subject, **attrs):
+        return UserStories(self.requester).create(self.id, subject, **attrs)
+
+    def list_user_stories(self):
+        return UserStories(self.requester).list()
+
+    def add_issue(self, subject, priority, status, issue_type, severity, **attrs):
+        return Issues(self.requester).create(self.id, subject, 
+            priority, status, issue_type, severity, **attrs)
+
+    def list_issues(self):
+        return Issues(self.requester).list()
 
 
 class Projects(ListResource):
