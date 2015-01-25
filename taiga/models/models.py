@@ -17,37 +17,25 @@ class Users(ListResource):
     instance = User
 
 
-class Project(InstanceResource):
+class Priority(InstanceResource):
 
-    endpoint = 'projects'
+    endpoint = 'priorities'
 
-    allowed_params = ['name', 'description', 'creation_template', 'is_backlog_activated',
-        'is_issues_activated', 'is_kanban_activated', 'is_private', 'is_wiki_activated',
-        'videoconferences', 'videoconferences_salt', 'total_milestones',
-        'total_story_points']
-
-    parser = {'users' : Users}
+    allowed_params = ['name', 'color', 'order', 'project']
 
     def __str__(self):
         return '{0}'.format(self.name)
 
-    def star(self):
-        self.requester.post('/{endpoint}/{id}/star', endpoint=self.endpoint, id=self.id)
-        return self
 
-    def unstar(self):
-        self.requester.post('/{endpoint}/{id}/unstar', endpoint=self.endpoint, id=self.id)
-        return self
+class Priorities(ListResource):
 
+    instance = Priority
 
-class Projects(ListResource):
-
-    instance = Project
-
-    def create(self, name, description, **attrs):
-        attrs.update({'name' : name, 'description' : description})
-        response = self.requester.post('/projects', payload=attrs)
-        return Project.parse(self.requester, response.json())
+    def create(self, project_id, name, **attrs):
+        attrs.update({'project' : project_id, 'name' : name})
+        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
+            payload=attrs)
+        return self.instance.parse(self.requester, response.json())
 
 
 class Attachment(InstanceResource):
@@ -115,6 +103,27 @@ class UserStories(ListResource):
         return UserStory.parse(self.requester, response.json())
 
 
+class TaskStatus(InstanceResource):
+
+    endpoint = 'task-statuses'
+
+    allowed_params = ['name', 'color', 'order', 'project', 'is_closed']
+
+    def __str__(self):
+        return '{0}'.format(self.name)
+
+
+class TaskStatuses(ListResource):
+
+    instance = TaskStatus
+
+    def create(self, project_id, name, **attrs):
+        attrs.update({'project' : project_id, 'name' : name})
+        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
+            payload=attrs)
+        return self.instance.parse(self.requester, response.json())
+
+
 class TaskAttachment(Attachment):
 
     endpoint = 'tasks/attachments'
@@ -154,6 +163,48 @@ class Tasks(ListResource):
             'status' : status})
         response = self.requester.post('/tasks', payload=attrs)
         return Task.parse(self.requester, response.json())
+
+
+class IssueType(InstanceResource):
+
+    endpoint = 'issue-statuses'
+
+    allowed_params = ['name', 'color', 'order', 'project']
+
+    def __str__(self):
+        return '{0}'.format(self.name)
+
+
+class IssueTypes(ListResource):
+
+    instance = IssueType
+
+    def create(self, project_id, name, **attrs):
+        attrs.update({'project' : project_id, 'name' : name})
+        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
+            payload=attrs)
+        return self.instance.parse(self.requester, response.json())
+
+
+class IssueStatus(InstanceResource):
+
+    endpoint = 'issue-statuses'
+
+    allowed_params = ['name', 'color', 'order', 'project', 'is_closed']
+
+    def __str__(self):
+        return '{0}'.format(self.name)
+
+
+class IssueStatuses(ListResource):
+
+    instance = IssueStatus
+
+    def create(self, project_id, name, **attrs):
+        attrs.update({'project' : project_id, 'name' : name})
+        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
+            payload=attrs)
+        return self.instance.parse(self.requester, response.json())
 
 
 class IssueAttachment(Attachment):
@@ -202,3 +253,63 @@ class Issues(ListResource):
             'status' : status, 'type' : issue_type, 'severity' : severity})
         response = self.requester.post('/issues', payload=attrs)
         return Issue.parse(self.requester, response.json())
+
+
+class Severity(InstanceResource):
+
+    endpoint = 'severities'
+
+    allowed_params = ['name', 'color', 'order', 'project']
+    def __str__(self):
+        return '{0}'.format(self.name)
+
+
+class Severities(ListResource):
+
+    instance = Severity
+
+    def create(self, project_id, name, **attrs):
+        attrs.update({'project' : project_id, 'name' : name})
+        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
+            payload=attrs)
+        return self.instance.parse(self.requester, response.json())
+
+
+class Project(InstanceResource):
+
+    endpoint = 'projects'
+
+    allowed_params = ['name', 'description', 'creation_template', 'is_backlog_activated',
+        'is_issues_activated', 'is_kanban_activated', 'is_private', 'is_wiki_activated',
+        'videoconferences', 'videoconferences_salt', 'total_milestones',
+        'total_story_points']
+
+    parser = {
+        'users' : Users, 
+        'priorities' : Priorities,
+        'issue_statuses' : IssueStatuses,
+        'issue_types' : IssueTypes,
+        'task_statuses' : TaskStatuses,
+        'severities' : Severities
+    }
+
+    def __str__(self):
+        return '{0}'.format(self.name)
+
+    def star(self):
+        self.requester.post('/{endpoint}/{id}/star', endpoint=self.endpoint, id=self.id)
+        return self
+
+    def unstar(self):
+        self.requester.post('/{endpoint}/{id}/unstar', endpoint=self.endpoint, id=self.id)
+        return self
+
+
+class Projects(ListResource):
+
+    instance = Project
+
+    def create(self, name, description, **attrs):
+        attrs.update({'name' : name, 'description' : description})
+        response = self.requester.post('/projects', payload=attrs)
+        return Project.parse(self.requester, response.json())
