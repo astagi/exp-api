@@ -80,7 +80,7 @@ class InstanceResource(Resource):
     def to_dict(self):
         self_dict = {}
         for key, value in six.iteritems(self.__dict__):
-            if key in self.allowed_params:
+            if self.allowed_params and key in self.allowed_params:
                 self_dict[key] = value
         return self_dict
 

@@ -4,8 +4,6 @@ class User(InstanceResource):
 
     endpoint = 'users'
 
-    allowed_params = ['']
-
     def __str__(self):
         return '{0} ({1})'.format(self.username, self.full_name)
 
@@ -52,6 +50,40 @@ class Projects(ListResource):
         return Project.parse(self.requester, response.json())
 
 
+class Attachment(InstanceResource):
+
+    allowed_params = ['object_id', 'project', 'attached_file', 'description', 'is_deprecated']
+
+    def __str__(self):
+        return '{0}'.format(self.subject)
+
+
+class Attachments(ListResource):
+
+    def __init__(self, requester, project, obj_id):
+        super(Attachments, self).__init__(
+            requester,
+        )
+        self.project = project
+        self.obj_id = obj_id
+
+    def create(self, subject, attached_file, **attrs):
+        attrs.update({'project' : self.project, 'object_id' : self.obj_id})
+        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint, 
+            files={'attached_file' : open(attached_file, 'rb')}, payload=attrs)
+        return self.instance.parse(self.requester, response.json())
+
+
+class UserStoryAttachment(Attachment):
+
+    endpoint = 'userstories/attachments'
+
+
+class UserStoryAttachments(Attachments):
+
+    instance = UserStoryAttachment
+
+
 class UserStory(InstanceResource):
 
     endpoint = 'userstories'
@@ -61,6 +93,13 @@ class UserStory(InstanceResource):
         'is_closed', 'kanban_order', 'milestone', 'points', 'project',
         'sprint_order', 'status', 'subject', 'tags', 'team_requirement',
         'watchers']
+
+    def __init__(self, requester, **params):
+        super(UserStory, self).__init__(
+            requester,
+            **params
+        )
+        self.attachments = UserStoryAttachments(requester, self.project, self.id)
 
     def __str__(self):
         return '{0}'.format(self.subject)
@@ -76,6 +115,16 @@ class UserStories(ListResource):
         return UserStory.parse(self.requester, response.json())
 
 
+class TaskAttachment(Attachment):
+
+    endpoint = 'tasks/attachments'
+
+
+class TaskAttachments(Attachments):
+
+    instance = TaskAttachment
+
+
 class Task(InstanceResource):
 
     endpoint = 'tasks'
@@ -84,6 +133,13 @@ class Task(InstanceResource):
         'is_closed', 'milestone', 'project', 'user_story', 'status', 'subject', 
         'tags', 'us_order', 'taskboard_order', 'is_iocaine','external_reference',
         'watchers']
+
+    def __init__(self, requester, **params):
+        super(Task, self).__init__(
+            requester,
+            **params
+        )
+        self.attachments = TaskAttachments(requester, self.project, self.id)
 
     def __str__(self):
         return '{0}'.format(self.subject)
@@ -100,32 +156,14 @@ class Tasks(ListResource):
         return Task.parse(self.requester, response.json())
 
 
-class Attachment(InstanceResource):
+class IssueAttachment(Attachment):
 
     endpoint = 'issues/attachments'
 
-    allowed_params = ['object_id', 'project', 'attached_file', 'description', 'is_deprecated']
 
-    def __str__(self):
-        return '{0}'.format(self.subject)
+class IssueAttachments(Attachments):
 
-
-class Attachments(ListResource):
-
-    instance = Attachment
-
-    def __init__(self, requester, issue_project, issue_id):
-        super(Attachments, self).__init__(
-            requester,
-        )
-        self.issue_project = issue_project
-        self.issue_id = issue_id
-
-    def create(self, subject, attached_file, **attrs):
-        attrs.update({'project' : self.issue_project, 'object_id' : self.issue_id})
-        response = self.requester.post('/issues/attachments', 
-            files={'attached_file' : open(attached_file, 'rb')}, payload=attrs)
-        return Attachment.parse(self.requester, response.json())
+    instance = IssueAttachment
 
 
 class Issue(InstanceResource):
@@ -137,7 +175,7 @@ class Issue(InstanceResource):
             requester,
             **params
         )
-        self.attachments = Attachments(requester, self.project, self.id)
+        self.attachments = IssueAttachments(requester, self.project, self.id)
 
     allowed_params = ['assigned_to', 'blocked_note', 'description', 'is_blocked',
         'is_closed', 'milestone', 'project', 'status', 'severity', 'priority', 'type',
