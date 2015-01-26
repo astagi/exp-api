@@ -1,6 +1,6 @@
 from taiga.requestmaker import RequestMaker, RequestMakerException
 from taiga.models.base import InstanceResource, ListResource
-from taiga.models import User
+from taiga.models import User, Point, UserStoryStatus, Severity
 from taiga import TaigaAPI
 import taiga.exceptions
 import json
@@ -33,6 +33,9 @@ class TestProjects(unittest.TestCase):
         project = api.projects.get(1)
         self.assertEqual(project.description, 'test 1 on real taiga')
         self.assertEqual(len(project.users), 1)
+        self.assertTrue(isinstance(project.points[0], Point))
+        self.assertTrue(isinstance(project.us_statuses[0], UserStoryStatus))
+        self.assertTrue(isinstance(project.severities[0], Severity))
 
     @patch('taiga.requestmaker.RequestMaker.get')
     def test_list_projects_parsing(self, mock_requestmaker_get):

@@ -100,6 +100,46 @@ class UserStories(ListResource):
         return UserStory.parse(self.requester, response.json())
 
 
+class UserStoryStatus(InstanceResource):
+
+    endpoint = 'userstory-statuses'
+
+    allowed_params = ['color', 'is_closed', 'name', 'order', 'project', 'wip_limit']
+
+    def __str__(self):
+        return '{0}'.format(self.subject)
+
+
+class UserStoryStatuses(ListResource):
+
+    instance = UserStoryStatus
+
+    def create(self, project_id, name, **attrs):
+        attrs.update({'project' : project_id, 'name' : name})
+        response = self.requester.post('/userstory-statuses', payload=attrs)
+        return UserStoryStatus.parse(self.requester, response.json())
+
+
+class Point(InstanceResource):
+
+    endpoint = 'points'
+
+    allowed_params = ['color', 'value', 'name', 'order', 'project']
+
+    def __str__(self):
+        return '{0}'.format(self.subject)
+
+
+class Points(ListResource):
+
+    instance = Point
+
+    def create(self, project_id, name, value, **attrs):
+        attrs.update({'project' : project_id, 'name' : name, 'value' : value})
+        response = self.requester.post('/points', payload=attrs)
+        return Point.parse(self.requester, response.json())
+
+
 class Milestone(InstanceResource):
 
     endpoint = 'milestones'
@@ -316,7 +356,9 @@ class Project(InstanceResource):
         'issue_statuses' : IssueStatuses,
         'issue_types' : IssueTypes,
         'task_statuses' : TaskStatuses,
-        'severities' : Severities
+        'severities' : Severities,
+        'points' : Points,
+        'us_statuses' : UserStoryStatuses
     }
 
     def __str__(self):

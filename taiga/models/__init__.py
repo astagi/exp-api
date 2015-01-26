@@ -10,3 +10,15 @@ from .models import Issue
 from .models import Issues
 from .models import Milestone
 from .models import Milestones
+from .models import Point
+from .models import Points
+from .models import UserStoryStatus
+from .models import UserStoryStatuses
+from .models import Severity
+from .models import Severities
+from .models import Priority
+from .models import Priorities
+from .models import IssueStatus
+from .models import IssueStatuses
+from .models import TaskStatus
+from .models import TaskStatuses
