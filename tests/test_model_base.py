@@ -78,20 +78,3 @@ class TestModelBase(unittest.TestCase):
         fakes.list(project_id=1)
         mock_requestmaker_get.assert_called_with('/{endpoint}', endpoint='fakes',
             query={'project_id':1})
-
-    @patch('taiga.requestmaker.RequestMaker.get')
-    def test_call_model_base_query(self, mock_requestmaker_get):
-        rm = RequestMaker('/api/v1', 'fakehost', 'faketoken')
-        mock_requestmaker_get.return_value = MockResponse(200, create_mock_json('tests/resources/fake_objects.json'))
-        fakes = Fakes(rm)
-        objects = fakes.list(param1='param1')
-        self.assertEqual(len(objects), 2)
-
-        objects = fakes.list(param2='param2')
-        self.assertEqual(len(objects), 2)
-
-        objects = fakes.list(param1='param1', param2='param2')
-        self.assertEqual(len(objects), 1)
-
-        objects = fakes.list(param2='paramfake')
-        self.assertEqual(len(objects), 0)

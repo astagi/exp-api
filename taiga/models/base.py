@@ -16,20 +16,7 @@ class ListResource(Resource):
         else:
             result = self.requester.get('/{endpoint}', endpoint=self.instance.endpoint)
         objects = self.parse_list(result.json())
-        result_objects = []
-        for obj in objects:
-            add = True
-            for key, value in six.iteritems(queryparams):
-                try:
-                    if obj.__dict__[key] != value:
-                        add = False
-                        break
-                except KeyError:
-                    add = False
-                    break
-            if add:
-                result_objects.append(obj)
-        return result_objects
+        return objects
 
     def get(self, id):
         response = self.requester.get('/{endpoint}/{id}', endpoint=self.instance.endpoint, id=id)
@@ -91,7 +78,8 @@ class InstanceResource(Resource):
             return ''
         else:
             for key_to_parse, cls_to_parse in six.iteritems(cls.parser):
-                entry[key_to_parse] = cls_to_parse.parse(requester, entry[key_to_parse])
+                if key_to_parse in entry:
+                    entry[key_to_parse] = cls_to_parse.parse(requester, entry[key_to_parse])
         return cls(requester, **entry)
 
     def __repr__(self):
