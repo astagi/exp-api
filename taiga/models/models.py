@@ -1,3 +1,4 @@
+import datetime
 from .base import InstanceResource, ListResource
 
 class User(InstanceResource):
@@ -50,7 +51,7 @@ class Attachments(ListResource):
 
     def create(self, project_id, object_id, subject, attached_file, **attrs):
         attrs.update({'project' : project_id, 'object_id' : object_id})
-        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint, 
+        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
             files={'attached_file' : open(attached_file, 'rb')}, payload=attrs)
         return self.instance.parse(self.requester, response.json())
 
@@ -82,7 +83,7 @@ class UserStory(InstanceResource):
         return Tasks(self.requester).list()
 
     def attach(self, subject, attached_file, **attrs):
-        return UserStoryAttachments(self.requester).create(self.project, self.id, 
+        return UserStoryAttachments(self.requester).create(self.project, self.id,
             subject, attached_file, **attrs)
 
     def __str__(self):
@@ -97,6 +98,41 @@ class UserStories(ListResource):
         attrs.update({'project' : project_id, 'subject' : subject})
         response = self.requester.post('/userstories', payload=attrs)
         return UserStory.parse(self.requester, response.json())
+
+
+class Milestone(InstanceResource):
+
+    endpoint = 'milestones'
+
+    allowed_params = ['name', 'project', 'estimated_start', 'estimated_finish',
+        'disponibility', 'slug', 'order', 'watchers']
+
+    parser = {
+        'user_stories' : UserStories,
+    }
+
+    def __str__(self):
+        return '{0}'.format(self.name)
+
+
+class Milestones(ListResource):
+
+    instance = Milestone
+
+    def create(self, project_id, name, estimated_start, estimated_finish, **attrs):
+        if isinstance(estimated_start, datetime.datetime):
+            estimated_start = estimated_start.strftime('%Y-%m-%d')
+        if isinstance(estimated_finish, datetime.datetime):
+            estimated_finish = estimated_finish.strftime('%Y-%m-%d')
+        attrs.update({
+            'project' : project_id,
+            'name' : name,
+            'estimated_start' : estimated_start,
+            'estimated_finish' : estimated_finish
+        })
+        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
+            payload=attrs)
+        return self.instance.parse(self.requester, response.json())
 
 
 class TaskStatus(InstanceResource):
@@ -135,12 +171,12 @@ class Task(InstanceResource):
     endpoint = 'tasks'
 
     allowed_params = ['assigned_to', 'blocked_note', 'description', 'is_blocked',
-        'is_closed', 'milestone', 'project', 'user_story', 'status', 'subject', 
+        'is_closed', 'milestone', 'project', 'user_story', 'status', 'subject',
         'tags', 'us_order', 'taskboard_order', 'is_iocaine','external_reference',
         'watchers']
 
     def attach(self, subject, attached_file, **attrs):
-        return TaskAttachments(self.requester).create(self.project, self.id, 
+        return TaskAttachments(self.requester).create(self.project, self.id,
             subject, attached_file, **attrs)
 
     def __str__(self):
@@ -152,7 +188,7 @@ class Tasks(ListResource):
     instance = Task
 
     def create(self, project_id, subject, status, **attrs):
-        attrs.update({'project' : project_id, 'subject' : subject, 
+        attrs.update({'project' : project_id, 'subject' : subject,
             'status' : status})
         response = self.requester.post('/tasks', payload=attrs)
         return Task.parse(self.requester, response.json())
@@ -227,7 +263,7 @@ class Issue(InstanceResource):
         return self
 
     def attach(self, subject, attached_file, **attrs):
-        return IssueAttachments(self.requester).create(self.project, self.id, 
+        return IssueAttachments(self.requester).create(self.project, self.id,
             subject, attached_file, **attrs)
 
     def __str__(self):
@@ -275,7 +311,7 @@ class Project(InstanceResource):
         'total_story_points']
 
     parser = {
-        'users' : Users, 
+        'users' : Users,
         'priorities' : Priorities,
         'issue_statuses' : IssueStatuses,
         'issue_types' : IssueTypes,
@@ -298,15 +334,21 @@ class Project(InstanceResource):
         return UserStories(self.requester).create(self.id, subject, **attrs)
 
     def list_user_stories(self):
-        return UserStories(self.requester).list()
+        return UserStories(self.requester).list(self.id)
 
     def add_issue(self, subject, priority, status, issue_type, severity, **attrs):
-        return Issues(self.requester).create(self.id, subject, 
+        return Issues(self.requester).create(self.id, subject,
             priority, status, issue_type, severity, **attrs)
 
     def list_issues(self):
-        return Issues(self.requester).list()
+        return Issues(self.requester).list(self.id)
 
+    def add_milestone(self, name, estimated_start, estimated_finish, **attrs):
+        return Milestones(self.requester).create(self.id, name,
+            estimated_start, estimated_finish, **attrs)
+
+    def list_milestones(self):
+        return Milestones(self.requester).list(self.id)
 
 class Projects(ListResource):
 

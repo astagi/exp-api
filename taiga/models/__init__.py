@@ -8,3 +8,5 @@ from .models import Task
 from .models import Tasks
 from .models import Issue
 from .models import Issues
+from .models import Milestone
+from .models import Milestones
