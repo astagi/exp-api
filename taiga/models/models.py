@@ -377,6 +377,47 @@ class Project(InstanceResource):
     def list_milestones(self):
         return Milestones(self.requester).list(self.id)
 
+    def add_point(self, name, value, **attrs):
+        return Points(self.requester).create(self.id, name, value, **attrs)
+
+    def list_points(self):
+        return Points(self.requester).list(self.id)
+
+    def add_task_status(self, name, **attrs):
+        return TaskStatuses(self.requester).create(self.id, name, **attrs)
+
+    def list_task_statuses(self):
+        return TaskStatuses(self.requester).list(self.id)
+
+    def add_user_story_status(self, name, **attrs):
+        return UserStoryStatuses(self.requester).create(self.id, name, **attrs)
+
+    def list_user_story_statuses(self):
+        return UserStoryStatuses(self.requester).list(self.id)
+
+    def add_issue_type(self, name, **attrs):
+        return IssueTypes(self.requester).create(self.id, name, **attrs)
+
+    def list_issue_types(self):
+        return IssueTypes(self.requester).list(self.id)
+
+    def add_severity(self, name, **attrs):
+        return Severities(self.requester).create(self.id, name, **attrs)
+
+    def list_severities(self):
+        return Severities(self.requester).list(self.id)
+
+    def add_priority(self, name, **attrs):
+        return Priorities(self.requester).create(self.id, name, **attrs)
+
+    def list_priorities(self):
+        return Priorities(self.requester).list(self.id)
+
+    def add_issue_status(self, name, **attrs):
+        return IssueStatuses(self.requester).create(self.id, name, **attrs)
+
+    def list_issue_statuses(self):
+        return IssueStatuses(self.requester).list(self.id)
 
 class Projects(ListResource):
 
