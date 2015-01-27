@@ -9,15 +9,10 @@ class Resource(object):
 
 class ListResource(Resource):
 
-    def list(self, project_id='', **queryparams):
-        if project_id:
-            result = self.requester.get(
-                '/{endpoint}', endpoint=self.instance.endpoint,
-                query={'project_id': project_id})
-        else:
-            result = self.requester.get(
-                '/{endpoint}', endpoint=self.instance.endpoint
-            )
+    def list(self, **queryparams):
+        result = self.requester.get(
+            '/{endpoint}', endpoint=self.instance.endpoint,
+            query=queryparams)
         objects = self.parse_list(result.json())
         return objects
 

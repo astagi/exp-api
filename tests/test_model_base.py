@@ -61,7 +61,7 @@ class TestModelBase(unittest.TestCase):
         rm = RequestMaker('/api/v1', 'fakehost', 'faketoken')
         fakes = Fakes(rm)
         fakes.list()
-        mock_requestmaker_get.assert_called_with('/{endpoint}', endpoint='fakes')
+        mock_requestmaker_get.assert_called_with('/{endpoint}', endpoint='fakes',  query={})
         fakes.list(project_id=1)
         mock_requestmaker_get.assert_called_with('/{endpoint}', endpoint='fakes',
             query={'project_id':1})
