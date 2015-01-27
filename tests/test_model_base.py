@@ -26,12 +26,6 @@ class Fakes(ListResource):
 
 class TestModelBase(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     @patch('taiga.requestmaker.RequestMaker.put')
     def test_call_model_base_update(self, mock_requestmaker_put):
         rm = RequestMaker('/api/v1', 'fakehost', 'faketoken')

@@ -9,12 +9,6 @@ from .tools import MockResponse
 
 class TestAuth(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     @patch('taiga.client.TaigaAPI._init_resources')
     def test_call_init_if_token_provided(self, init):
         api = TaigaAPI(token='f4k3')

@@ -11,12 +11,6 @@ from .tools import MockResponse
 
 class TestUsers(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     @unittest.skip
     @patch('taiga.requestmaker.RequestMaker.get')
     def test_single_user_parsing(self, mock_requestmaker_get):

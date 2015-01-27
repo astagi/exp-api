@@ -8,12 +8,6 @@ from .tools import MockResponse
 
 class TestRequestMaker(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     @patch('taiga.requestmaker.requests.get')
     def test_call_requests_get(self, requests_get):
         rm = RequestMaker(api_path='/', host='host', token='f4k3')

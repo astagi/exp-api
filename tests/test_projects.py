@@ -12,12 +12,6 @@ from .tools import MockResponse
 
 class TestProjects(unittest.TestCase):
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     @patch('taiga.requestmaker.RequestMaker.get')
     def test_single_project_parsing(self, mock_requestmaker_get):
         mock_requestmaker_get.return_value = MockResponse(200,
