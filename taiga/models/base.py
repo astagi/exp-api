@@ -1,5 +1,5 @@
-import requests
 import six
+
 
 class Resource(object):
 
@@ -11,24 +11,34 @@ class ListResource(Resource):
 
     def list(self, project_id='', **queryparams):
         if project_id:
-            result = self.requester.get('/{endpoint}', endpoint=self.instance.endpoint,
-                query={'project_id':project_id})
+            result = self.requester.get(
+                '/{endpoint}', endpoint=self.instance.endpoint,
+                query={'project_id': project_id})
         else:
-            result = self.requester.get('/{endpoint}', endpoint=self.instance.endpoint)
+            result = self.requester.get(
+                '/{endpoint}', endpoint=self.instance.endpoint
+            )
         objects = self.parse_list(result.json())
         return objects
 
     def get(self, id):
-        response = self.requester.get('/{endpoint}/{id}', endpoint=self.instance.endpoint, id=id)
+        response = self.requester.get(
+            '/{endpoint}/{id}',
+            endpoint=self.instance.endpoint, id=id
+        )
         return self.instance.parse(self.requester, response.json())
 
     def delete(self, id):
-        self.requester.delete('/{endpoint}/{id}', endpoint=self.instance.endpoint, id=id)
+        self.requester.delete(
+            '/{endpoint}/{id}',
+            endpoint=self.instance.endpoint, id=id
+        )
         return self
 
     def _new_resource(self, **attrs):
-        response = self.requester.post('/{0}'.format(self.instance.endpoint),
-            **attrs)
+        response = self.requester.post(
+            '/{0}'.format(self.instance.endpoint), **attrs
+        )
         return self.instance.parse(self.requester, response.json())
 
     @classmethod
@@ -61,12 +71,17 @@ class InstanceResource(Resource):
             setattr(self, key, value)
 
     def update(self):
-        self.requester.put('/{endpoint}/{id}', endpoint=self.endpoint,
-            id=self.id, payload=self.to_dict())
+        self.requester.put(
+            '/{endpoint}/{id}', endpoint=self.endpoint,
+            id=self.id, payload=self.to_dict()
+        )
         return self
 
     def delete(self):
-        self.requester.delete('/{endpoint}/{id}', endpoint=self.endpoint, id=self.id)
+        self.requester.delete(
+            '/{endpoint}/{id}', endpoint=self.endpoint,
+            id=self.id
+        )
         return self
 
     def to_dict(self):
@@ -84,7 +99,9 @@ class InstanceResource(Resource):
         else:
             for key_to_parse, cls_to_parse in six.iteritems(cls.parser):
                 if key_to_parse in entry:
-                    entry[key_to_parse] = cls_to_parse.parse(requester, entry[key_to_parse])
+                    entry[key_to_parse] = cls_to_parse.parse(
+                        requester, entry[key_to_parse]
+                    )
         return cls(requester, **entry)
 
     def __repr__(self):

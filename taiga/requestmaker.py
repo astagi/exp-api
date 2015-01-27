@@ -3,8 +3,10 @@ import requests
 from . import exceptions
 from requests.exceptions import RequestException
 
+
 class RequestMakerException(Exception):
     pass
+
 
 class RequestMaker(object):
 
@@ -18,8 +20,8 @@ class RequestMaker(object):
 
     def headers(self):
         headers = {
-            'Content-type' : 'application/json',
-            'Authorization' : 'Bearer {0}'.format(self.token)
+            'Content-type': 'application/json',
+            'Authorization': 'Bearer {0}'.format(self.token)
         }
         return headers
 
@@ -31,21 +33,28 @@ class RequestMaker(object):
                 headers=self.headers(),
                 params=query
             )
-        except RequestException as e:
-            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'GET')
+        except RequestException:
+            raise exceptions.TaigaRestException(
+                full_url, 400,
+                'Network error!', 'GET'
+            )
         if not self.is_bad_response(result):
+            print result.text
             return result
         else:
-            raise exceptions.TaigaRestException(full_url, result.status_code, result.text, 'GET')
+            raise exceptions.TaigaRestException(
+                full_url, result.status_code,
+                result.text, 'GET'
+            )
 
     def post(self, uri, payload=None, query={}, files={}, **parameters):
         if files:
             headers = {
-                'Authorization' : 'Bearer {0}'.format(self.token)
+                'Authorization': 'Bearer {0}'.format(self.token)
             }
             data = payload
         else:
-            headers=self.headers()
+            headers = self.headers()
             data = json.dumps(payload)
         try:
             full_url = self.host + self.api_path + uri.format(**parameters)
@@ -56,12 +65,18 @@ class RequestMaker(object):
                 params=query,
                 files=files
             )
-        except RequestException as e:
-            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'POST')
+        except RequestException:
+            raise exceptions.TaigaRestException(
+                full_url, 400,
+                'Network error!', 'POST'
+            )
         if not self.is_bad_response(result):
             return result
         else:
-            raise exceptions.TaigaRestException(full_url, result.status_code, result.text, 'POST')
+            raise exceptions.TaigaRestException(
+                full_url, result.status_code,
+                result.text, 'POST'
+            )
 
     def delete(self, uri, query={}, **parameters):
         try:
@@ -71,12 +86,18 @@ class RequestMaker(object):
                 headers=self.headers(),
                 params=query
             )
-        except RequestException as e:
-            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'DELETE')
+        except RequestException:
+            raise exceptions.TaigaRestException(
+                full_url, 400,
+                'Network error!', 'DELETE'
+            )
         if not self.is_bad_response(result):
             return result
         else:
-            raise exceptions.TaigaRestException(full_url, result.status_code, result.text, 'DELETE')
+            raise exceptions.TaigaRestException(
+                full_url, result.status_code,
+                result.text, 'DELETE'
+            )
 
     def put(self, uri, payload=None, query={}, **parameters):
         try:
@@ -87,9 +108,15 @@ class RequestMaker(object):
                 data=json.dumps(payload),
                 params=query
             )
-        except RequestException as e:
-            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'PUT')
+        except RequestException:
+            raise exceptions.TaigaRestException(
+                full_url, 400,
+                'Network error!', 'PUT'
+            )
         if not self.is_bad_response(result):
             return result
         else:
-            raise exceptions.TaigaRestException(full_url, result.status_code, result.text, 'PUT')
+            raise exceptions.TaigaRestException(
+                full_url, result.status_code,
+                result.text, 'PUT'
+            )

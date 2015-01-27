@@ -16,6 +16,7 @@ from .requestmaker import RequestMaker
 from requests.exceptions import RequestException
 from . import exceptions
 
+
 class TaigaAPI:
 
     def __init__(self, host='https://api.taiga.io', token=None):
@@ -44,9 +45,9 @@ class TaigaAPI:
             'Content-type': 'application/json'
         }
         payload = {
-            'type' : 'normal',
-            'username' : username,
-            'password' : password
+            'type': 'normal',
+            'username': username,
+            'password': password
         }
         try:
             full_url = self.host + '/api/v1/auth'
@@ -56,9 +57,14 @@ class TaigaAPI:
                 headers=headers
             )
         except RequestException as e:
-            raise exceptions.TaigaRestException(full_url, 400, 'Network error!', 'GET')
+            raise exceptions.TaigaRestException(full_url, 400, e, 'GET')
         if response.status_code != 200:
-            raise exceptions.TaigaRestException(full_url, response.status_code, response.text, 'GET')
+            raise exceptions.TaigaRestException(
+                full_url,
+                response.status_code,
+                response.text,
+                'GET'
+            )
         self.token = response.json()['auth_token']
         self.raw_request = RequestMaker('/api/v1', self.host, self.token)
         self._init_resources()

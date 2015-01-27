@@ -22,3 +22,11 @@ from .models import IssueStatus
 from .models import IssueStatuses
 from .models import TaskStatus
 from .models import TaskStatuses
+
+__all__ = [
+    'User', 'Users', 'Project', 'Projects', 'UserStory', 'UserStories',
+    'Task', 'Tasks', 'Issue', 'Issues', 'Milestone', 'Milestones',
+    'Point', 'Points', 'UserStoryStatus', 'UserStoryStatuses',
+    'Severity', 'Severities', 'Priority', 'Priorities', 'IssueStatus',
+    'IssueStatuses', 'TaskStatus', 'TaskStatuses'
+]

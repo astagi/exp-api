@@ -1,6 +1,7 @@
 class TaigaException(Exception):
     pass
 
+
 class TaigaRestException(TaigaException):
 
     def __init__(self, uri, status_code, msg="", method='GET'):
