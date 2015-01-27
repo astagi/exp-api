@@ -26,6 +26,11 @@ class ListResource(Resource):
         self.requester.delete('/{endpoint}/{id}', endpoint=self.instance.endpoint, id=id)
         return self
 
+    def _new_resource(self, **attrs):
+        response = self.requester.post('/{0}'.format(self.instance.endpoint),
+            **attrs)
+        return self.instance.parse(self.requester, response.json())
+
     @classmethod
     def parse(cls, requester, entries):
         """Parse a JSON array into a list of model instances."""

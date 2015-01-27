@@ -50,6 +50,6 @@ class TestMilestones(unittest.TestCase):
         start_time = datetime.datetime(2015, 1, 16, 0, 0)
         finish_time = datetime.datetime(2015, 2, 16, 0, 0)
         api.milestones.create(1, 'Sprint Jan', start_time, finish_time)
-        mock_requestmaker_post.assert_called_with('/{endpoint}', endpoint='milestones',
+        mock_requestmaker_post.assert_called_with('/milestones',
             payload={'project': 1, 'estimated_finish': '2015-02-16',
             'estimated_start': '2015-01-16', 'name': 'Sprint Jan'})

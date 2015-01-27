@@ -34,9 +34,7 @@ class Priorities(ListResource):
 
     def create(self, project_id, name, **attrs):
         attrs.update({'project' : project_id, 'name' : name})
-        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
-            payload=attrs)
-        return self.instance.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class Attachment(InstanceResource):
@@ -51,9 +49,10 @@ class Attachments(ListResource):
 
     def create(self, project_id, object_id, subject, attached_file, **attrs):
         attrs.update({'project' : project_id, 'object_id' : object_id})
-        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
-            files={'attached_file' : open(attached_file, 'rb')}, payload=attrs)
-        return self.instance.parse(self.requester, response.json())
+        return self._new_resource(
+            files={'attached_file' : open(attached_file, 'rb')},
+            payload=attrs
+        )
 
 
 class UserStoryAttachment(Attachment):
@@ -96,8 +95,7 @@ class UserStories(ListResource):
 
     def create(self, project_id, subject, **attrs):
         attrs.update({'project' : project_id, 'subject' : subject})
-        response = self.requester.post('/userstories', payload=attrs)
-        return UserStory.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class UserStoryStatus(InstanceResource):
@@ -116,8 +114,7 @@ class UserStoryStatuses(ListResource):
 
     def create(self, project_id, name, **attrs):
         attrs.update({'project' : project_id, 'name' : name})
-        response = self.requester.post('/userstory-statuses', payload=attrs)
-        return UserStoryStatus.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class Point(InstanceResource):
@@ -136,8 +133,7 @@ class Points(ListResource):
 
     def create(self, project_id, name, value, **attrs):
         attrs.update({'project' : project_id, 'name' : name, 'value' : value})
-        response = self.requester.post('/points', payload=attrs)
-        return Point.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class Milestone(InstanceResource):
@@ -170,9 +166,7 @@ class Milestones(ListResource):
             'estimated_start' : estimated_start,
             'estimated_finish' : estimated_finish
         })
-        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
-            payload=attrs)
-        return self.instance.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class TaskStatus(InstanceResource):
@@ -191,9 +185,7 @@ class TaskStatuses(ListResource):
 
     def create(self, project_id, name, **attrs):
         attrs.update({'project' : project_id, 'name' : name})
-        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
-            payload=attrs)
-        return self.instance.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class TaskAttachment(Attachment):
@@ -230,8 +222,7 @@ class Tasks(ListResource):
     def create(self, project_id, subject, status, **attrs):
         attrs.update({'project' : project_id, 'subject' : subject,
             'status' : status})
-        response = self.requester.post('/tasks', payload=attrs)
-        return Task.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class IssueType(InstanceResource):
@@ -250,9 +241,7 @@ class IssueTypes(ListResource):
 
     def create(self, project_id, name, **attrs):
         attrs.update({'project' : project_id, 'name' : name})
-        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
-            payload=attrs)
-        return self.instance.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class IssueStatus(InstanceResource):
@@ -271,9 +260,7 @@ class IssueStatuses(ListResource):
 
     def create(self, project_id, name, **attrs):
         attrs.update({'project' : project_id, 'name' : name})
-        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
-            payload=attrs)
-        return self.instance.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class IssueAttachment(Attachment):
@@ -317,8 +304,7 @@ class Issues(ListResource):
     def create(self, project_id, subject, priority, status, issue_type, severity, **attrs):
         attrs.update({'project' : project_id, 'subject' : subject, 'priority' : priority,
             'status' : status, 'type' : issue_type, 'severity' : severity})
-        response = self.requester.post('/issues', payload=attrs)
-        return Issue.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class Severity(InstanceResource):
@@ -336,9 +322,7 @@ class Severities(ListResource):
 
     def create(self, project_id, name, **attrs):
         attrs.update({'project' : project_id, 'name' : name})
-        response = self.requester.post('/{endpoint}', endpoint=self.instance.endpoint,
-            payload=attrs)
-        return self.instance.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
 
 
 class Project(InstanceResource):
@@ -392,11 +376,11 @@ class Project(InstanceResource):
     def list_milestones(self):
         return Milestones(self.requester).list(self.id)
 
+
 class Projects(ListResource):
 
     instance = Project
 
     def create(self, name, description, **attrs):
         attrs.update({'name' : name, 'description' : description})
-        response = self.requester.post('/projects', payload=attrs)
-        return Project.parse(self.requester, response.json())
+        return self._new_resource(payload=attrs)
