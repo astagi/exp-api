@@ -7,6 +7,7 @@ import unittest
 from mock import patch
 from .tools import create_mock_json
 from .tools import MockResponse
+import six
 
 class Fake(InstanceResource):
 
@@ -64,3 +65,10 @@ class TestModelBase(unittest.TestCase):
         fakes.list(project_id=1)
         mock_requestmaker_get.assert_called_with('/{endpoint}', endpoint='fakes',
             query={'project_id':1})
+
+    def test_to_dict_method(self):
+        rm = RequestMaker('/api/v1', 'fakehost', 'faketoken')
+        fake = Fake(rm, id=1, param1='one', param2='two')
+        expected_dict = {'param1':'one', 'param2':'two'}
+        self.assertEqual(len(fake.to_dict()), 2)
+        self.assertEqual(fake.to_dict(), expected_dict)
