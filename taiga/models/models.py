@@ -312,6 +312,7 @@ class Severity(InstanceResource):
     endpoint = 'severities'
 
     allowed_params = ['name', 'color', 'order', 'project']
+
     def __str__(self):
         return '{0}'.format(self.name)
 
