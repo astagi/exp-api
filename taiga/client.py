@@ -57,7 +57,7 @@ class TaigaAPI:
                 headers=headers
             )
         except RequestException as e:
-            raise exceptions.TaigaRestException(full_url, 400, e, 'GET')
+            raise exceptions.TaigaRestException(full_url, 400, 'NETWORK ERROR', 'GET')
         if response.status_code != 200:
             raise exceptions.TaigaRestException(
                 full_url,
