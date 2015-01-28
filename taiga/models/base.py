@@ -89,14 +89,11 @@ class InstanceResource(Resource):
     @classmethod
     def parse(cls, requester, entry):
         """Parse a JSON object into a model instance."""
-        if entry is None:
-            return ''
-        else:
-            for key_to_parse, cls_to_parse in six.iteritems(cls.parser):
-                if key_to_parse in entry:
-                    entry[key_to_parse] = cls_to_parse.parse(
-                        requester, entry[key_to_parse]
-                    )
+        for key_to_parse, cls_to_parse in six.iteritems(cls.parser):
+            if key_to_parse in entry:
+                entry[key_to_parse] = cls_to_parse.parse(
+                    requester, entry[key_to_parse]
+                )
         return cls(requester, **entry)
 
     def __repr__(self):
