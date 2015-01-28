@@ -44,7 +44,7 @@ class Priorities(ListResource):
 class Attachment(InstanceResource):
 
     allowed_params = [
-        'object', 'project', 'attached_file',
+        'object_id', 'project', 'attached_file',
         'description', 'is_deprecated'
     ]
 
@@ -54,8 +54,8 @@ class Attachment(InstanceResource):
 
 class Attachments(ListResource):
 
-    def create(self, project, object, subject, attached_file, **attrs):
-        attrs.update({'project': project, 'object': object})
+    def create(self, project, object_id, subject, attached_file, **attrs):
+        attrs.update({'project': project, 'object_id': object_id})
         return self._new_resource(
             files={'attached_file': open(attached_file, 'rb')},
             payload=attrs
