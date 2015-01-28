@@ -17,6 +17,14 @@ from requests.exceptions import RequestException
 from . import exceptions
 
 
+class SearchResult(object):
+
+    count = 0
+    tasks = []
+    issues = []
+    user_stories = []
+
+
 class TaigaAPI:
 
     def __init__(self, host='https://api.taiga.io', token=None):
@@ -39,6 +47,19 @@ class TaigaAPI:
         self.task_statuses = TaskStatuses(self.raw_request)
         self.priorities = Priorities(self.raw_request)
         self.user_story_statuses = UserStoryStatuses(self.raw_request)
+
+    def search(self, project, text=''):
+        result = self.raw_request.get(
+            'search', query={'project': project, 'text': text}
+        )
+        result = result.json()
+        search_result = SearchResult()
+        search_result.tasks = self.tasks.parse_list(result['tasks'])
+        search_result.issues = self.issues.parse_list(result['issues'])
+        search_result.user_stories = self.user_stories.parse_list(
+            result['userstories']
+        )
+        return search_result
 
     def auth(self, username, password):
         headers = {
