@@ -11,8 +11,8 @@ class ListResource(Resource):
 
     def list(self, **queryparams):
         result = self.requester.get(
-            '/{endpoint}', endpoint=self.instance.endpoint,
-            query=queryparams)
+            self.instance.endpoint, query=queryparams
+        )
         objects = self.parse_list(result.json())
         return objects
 
@@ -32,7 +32,7 @@ class ListResource(Resource):
 
     def _new_resource(self, **attrs):
         response = self.requester.post(
-            '/{0}'.format(self.instance.endpoint), **attrs
+            self.instance.endpoint, **attrs
         )
         return self.instance.parse(self.requester, response.json())
 
