@@ -3,6 +3,7 @@ import requests
 from . import exceptions
 from requests.exceptions import RequestException
 
+
 class RequestMakerException(Exception):
     pass
 
@@ -29,7 +30,10 @@ class RequestMaker(object):
 
     def get(self, uri, query={}, **parameters):
         try:
-            full_url = self.urljoin(self.host, self.api_path, uri.format(**parameters))
+            full_url = self.urljoin(
+                self.host, self.api_path,
+                uri.format(**parameters)
+            )
             result = requests.get(
                 full_url,
                 headers=self.headers(),
@@ -41,7 +45,6 @@ class RequestMaker(object):
                 'Network error!', 'GET'
             )
         if not self.is_bad_response(result):
-            #print result.text
             return result
         else:
             raise exceptions.TaigaRestException(
@@ -59,7 +62,10 @@ class RequestMaker(object):
             headers = self.headers()
             data = json.dumps(payload)
         try:
-            full_url = self.urljoin(self.host, self.api_path, uri.format(**parameters))
+            full_url = self.urljoin(
+                self.host, self.api_path,
+                uri.format(**parameters)
+            )
             result = requests.post(
                 full_url,
                 headers=headers,
@@ -82,7 +88,10 @@ class RequestMaker(object):
 
     def delete(self, uri, query={}, **parameters):
         try:
-            full_url = self.urljoin(self.host, self.api_path, uri.format(**parameters))
+            full_url = self.urljoin(
+                self.host, self.api_path,
+                uri.format(**parameters)
+            )
             result = requests.delete(
                 full_url,
                 headers=self.headers(),
@@ -103,7 +112,10 @@ class RequestMaker(object):
 
     def put(self, uri, payload=None, query={}, **parameters):
         try:
-            full_url = self.urljoin(self.host, self.api_path, uri.format(**parameters))
+            full_url = self.urljoin(
+                self.host, self.api_path,
+                uri.format(**parameters)
+            )
             result = requests.put(
                 full_url,
                 headers=self.headers(),

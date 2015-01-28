@@ -56,8 +56,11 @@ class TaigaAPI:
                 data=json.dumps(payload),
                 headers=headers
             )
-        except RequestException as e:
-            raise exceptions.TaigaRestException(full_url, 400, 'NETWORK ERROR', 'GET')
+        except RequestException:
+            raise exceptions.TaigaRestException(
+                full_url, 400,
+                'NETWORK ERROR', 'GET'
+            )
         if response.status_code != 200:
             raise exceptions.TaigaRestException(
                 full_url,
