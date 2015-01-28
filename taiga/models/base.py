@@ -16,17 +16,17 @@ class ListResource(Resource):
         objects = self.parse_list(result.json())
         return objects
 
-    def get(self, id):
+    def get(self, resource_id):
         response = self.requester.get(
             '/{endpoint}/{id}',
-            endpoint=self.instance.endpoint, id=id
+            endpoint=self.instance.endpoint, id=resource_id
         )
         return self.instance.parse(self.requester, response.json())
 
-    def delete(self, id):
+    def delete(self, resource_id):
         self.requester.delete(
             '/{endpoint}/{id}',
-            endpoint=self.instance.endpoint, id=id
+            endpoint=self.instance.endpoint, id=resource_id
         )
         return self
 
