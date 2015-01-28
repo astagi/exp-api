@@ -22,6 +22,18 @@ class TestRequestMaker(unittest.TestCase):
         rm.post('/nowhere')
         self.assertTrue(requests_post.called)
 
+    @patch('taiga.requestmaker.requests.post')
+    def test_call_requests_post_with_files(self, requests_post):
+        rm = RequestMaker(api_path='/v1/', host='http://host', token='f4k3')
+        requests_post.return_value = MockResponse(200, '')
+        file_desc = open('tests/resources/fake_objects.json')
+        rm.post('nowhere', files={'sample' : file_desc})
+        requests_post.assert_called_once_with(
+            'http://host/v1/nowhere', files={'sample' : file_desc},
+            data=None, params={},
+            headers={'Authorization': 'Bearer f4k3'}
+        )
+
     @patch('taiga.requestmaker.requests.put')
     def test_call_requests_put(self, requests_put):
         rm = RequestMaker(api_path='/', host='host', token='f4k3')
