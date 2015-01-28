@@ -68,7 +68,7 @@ class TestModelBase(unittest.TestCase):
 
     def test_to_dict_method(self):
         rm = RequestMaker('/api/v1', 'fakehost', 'faketoken')
-        fake = Fake(rm, id=1, param1='one', param2='two')
+        fake = Fake(rm, id=1, param1='one', param2='two', param3='three')
         expected_dict = {'param1':'one', 'param2':'two'}
         self.assertEqual(len(fake.to_dict()), 2)
         self.assertEqual(fake.to_dict(), expected_dict)
