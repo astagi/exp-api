@@ -36,15 +36,15 @@ class Priorities(ListResource):
 
     instance = Priority
 
-    def create(self, project_id, name, **attrs):
-        attrs.update({'project': project_id, 'name': name})
+    def create(self, project, name, **attrs):
+        attrs.update({'project': project, 'name': name})
         return self._new_resource(payload=attrs)
 
 
 class Attachment(InstanceResource):
 
     allowed_params = [
-        'object_id', 'project', 'attached_file',
+        'object', 'project', 'attached_file',
         'description', 'is_deprecated'
     ]
 
@@ -54,8 +54,8 @@ class Attachment(InstanceResource):
 
 class Attachments(ListResource):
 
-    def create(self, project_id, object_id, subject, attached_file, **attrs):
-        attrs.update({'project': project_id, 'object_id': object_id})
+    def create(self, project, object, subject, attached_file, **attrs):
+        attrs.update({'project': project, 'object': object})
         return self._new_resource(
             files={'attached_file': open(attached_file, 'rb')},
             payload=attrs
@@ -107,8 +107,8 @@ class UserStories(ListResource):
 
     instance = UserStory
 
-    def create(self, project_id, subject, **attrs):
-        attrs.update({'project': project_id, 'subject': subject})
+    def create(self, project, subject, **attrs):
+        attrs.update({'project': project, 'subject': subject})
         return self._new_resource(payload=attrs)
 
 
@@ -128,8 +128,8 @@ class UserStoryStatuses(ListResource):
 
     instance = UserStoryStatus
 
-    def create(self, project_id, name, **attrs):
-        attrs.update({'project': project_id, 'name': name})
+    def create(self, project, name, **attrs):
+        attrs.update({'project': project, 'name': name})
         return self._new_resource(payload=attrs)
 
 
@@ -147,8 +147,8 @@ class Points(ListResource):
 
     instance = Point
 
-    def create(self, project_id, name, value, **attrs):
-        attrs.update({'project': project_id, 'name': name, 'value': value})
+    def create(self, project, name, value, **attrs):
+        attrs.update({'project': project, 'name': name, 'value': value})
         return self._new_resource(payload=attrs)
 
 
@@ -173,14 +173,14 @@ class Milestones(ListResource):
 
     instance = Milestone
 
-    def create(self, project_id, name, estimated_start,
+    def create(self, project, name, estimated_start,
                estimated_finish, **attrs):
         if isinstance(estimated_start, datetime.datetime):
             estimated_start = estimated_start.strftime('%Y-%m-%d')
         if isinstance(estimated_finish, datetime.datetime):
             estimated_finish = estimated_finish.strftime('%Y-%m-%d')
         attrs.update({
-            'project': project_id,
+            'project': project,
             'name': name,
             'estimated_start': estimated_start,
             'estimated_finish': estimated_finish
@@ -202,8 +202,8 @@ class TaskStatuses(ListResource):
 
     instance = TaskStatus
 
-    def create(self, project_id, name, **attrs):
-        attrs.update({'project': project_id, 'name': name})
+    def create(self, project, name, **attrs):
+        attrs.update({'project': project, 'name': name})
         return self._new_resource(payload=attrs)
 
 
@@ -242,10 +242,10 @@ class Tasks(ListResource):
 
     instance = Task
 
-    def create(self, project_id, subject, status, **attrs):
+    def create(self, project, subject, status, **attrs):
         attrs.update(
             {
-                'project': project_id, 'subject': subject,
+                'project': project, 'subject': subject,
                 'status': status
             }
         )
@@ -266,8 +266,8 @@ class IssueTypes(ListResource):
 
     instance = IssueType
 
-    def create(self, project_id, name, **attrs):
-        attrs.update({'project': project_id, 'name': name})
+    def create(self, project, name, **attrs):
+        attrs.update({'project': project, 'name': name})
         return self._new_resource(payload=attrs)
 
 
@@ -285,8 +285,8 @@ class IssueStatuses(ListResource):
 
     instance = IssueStatus
 
-    def create(self, project_id, name, **attrs):
-        attrs.update({'project': project_id, 'name': name})
+    def create(self, project, name, **attrs):
+        attrs.update({'project': project, 'name': name})
         return self._new_resource(payload=attrs)
 
 
@@ -338,11 +338,11 @@ class Issues(ListResource):
 
     instance = Issue
 
-    def create(self, project_id, subject, priority, status,
+    def create(self, project, subject, priority, status,
                issue_type, severity, **attrs):
         attrs.update(
             {
-                'project': project_id, 'subject': subject,
+                'project': project, 'subject': subject,
                 'priority': priority, 'status': status,
                 'type': issue_type, 'severity': severity
             }
@@ -364,8 +364,8 @@ class Severities(ListResource):
 
     instance = Severity
 
-    def create(self, project_id, name, **attrs):
-        attrs.update({'project': project_id, 'name': name})
+    def create(self, project, name, **attrs):
+        attrs.update({'project': project, 'name': name})
         return self._new_resource(payload=attrs)
 
 
