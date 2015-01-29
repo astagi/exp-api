@@ -141,8 +141,8 @@ for user_story in search_result.user_stories:
     print (user_story)
 ```
 
-[travis-url]: https://travis-ci.org/nephila/python-taiga
-[travis-image]: http://img.shields.io/travis/nephila/python-taiga.svg
+[travis-url]: https://travis-ci.org/astagi/experimental-python-taiga
+[travis-image]: http://img.shields.io/travis/astagi/experimental-python-taiga.svg
 
-[coveralls-url]: https://coveralls.io/r/nephila/python-taiga
-[coveralls-image]: http://img.shields.io/coveralls/nephila/python-taiga/master.svg
+[coveralls-url]: https://coveralls.io/r/astagi/experimental-python-taiga
+[coveralls-image]: http://img.shields.io/coveralls/astagi/experimental-python-taiga/master.svg
