@@ -1,5 +1,35 @@
-.DS_Store
-*.pyc
+*.py[co]
+
+# Packages
+*.egg
 *.egg-info
-*.tox
 dist
+build
+eggs
+parts
+bin
+develop-eggs
+.installed.cfg
+scratch
+env
+venv*
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+
+.DS_Store
+
+# Sphinx
+docs/tmp
+docs/_build
+cover
+
+# PyCharm/IntelliJ
+.idea
+
+#htmlcov
+*htmlcov*
