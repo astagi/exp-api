@@ -38,58 +38,8 @@ You can also specify a different host if you use Taiga somewhere else
 from taiga import TaigaAPI
 
 api = TaigaAPI(
-    host='http://taiga.nph.nephila.it'
+    host='http://taiga.my.host.org'
 )
-```
-
-### List all the users
-
-```python
-from taiga import TaigaAPI
-
-api = TaigaAPI(token='token')
-
-print (api.users.list())
-```
-
-You can pass a `project_id` parameter to get all the users of a specific project.
-
-```python
-print (api.users.list(project_id=1))
-```
-
-### Update an user
-
-```python
-user.full_name = 'Andreas'
-user.update()
-```
-
-### Delete an user
-
-```python
-user.delete()
-```
-
-### List all the projects
-
-```python
-from taiga import TaigaAPI
-
-api = TaigaAPI(token='token')
-
-print (api.projects.list())
-```
-
-### Get all the users in a project
-
-```python
-from taiga import TaigaAPI
-
-api = TaigaAPI(token='token')
-
-for user in projects[0].users:
-    print (user)
 ```
 
 ### Create a project
@@ -98,81 +48,67 @@ for user in projects[0].users:
 new_project = api.projects.create('TEST PROJECT', 'TESTING API')
 ```
 
-### Star a project
+### Create a new user story
 
 ```python
-new_project.star()
+userstory = new_project.add_user_story(
+    'New Story', description='Blablablabla'
+)
 ```
 
-### Update a project
-
-You can change any attribute and then call update
+You can also create a milestone and pass it to a story
 
 ```python
-new_project.name = 'New project'
-new_project.update()
+jan_feb_milestone = new_project.add_milestone(
+    'MILESTONE 1', '2015-01-26', '2015-02-26'
+)
+
+userstory = new_project.add_user_story(
+    'New Story', description='Blablablabla',
+    milestone=jan_feb_milestone.id
+)
 ```
 
-### Delete a project
+### Create an issue
 
 ```python
-new_project.delete()
+newissue = new_project.add_issue(
+    'New Issue', new_project.priorities[1].id,
+    new_project.issue_statuses[0].id,
+    new_project.issue_types[0].id,
+    new_project.severities[0].id, description='Bug #5'
+)
 ```
 
-### Use me object
-
-me is a User object representing you
+### List elements
 
 ```python
-from taiga import TaigaAPI
-
-api = TaigaAPI(token='token')
-
-print (api.me)
-print (api.me.starred_projects())
+projects = api.projects.list()
+stories = api.user_stories.list()
 ```
 
-### Create an user story
-
-api.me provides a User object representing you
+You can also specify filters
 
 ```python
-from taiga import TaigaAPI
-
-api = TaigaAPI(token='token')
-
-new_project = api.projects.create('TEST PROJECT', 'TESTING API')
-new_story = api.stories.create(new_project.id, 'New Story', description='Blablablabla')
+tasks = api.tasks.list(project=1)
 ```
 
-### List all the stories
+### Attach a file
+
+You can attach files to issues, user stories and tasks
 
 ```python
-from taiga import TaigaAPI
-
-api = TaigaAPI(token='token')
-
-stories = api.stories.list()
-print (stories)
+newissue.attach('Read the README in Issue', 'README.md')
 ```
 
-You can pass a `project_id` parameter to get all the user stories of a specific project.
+### Search
+
+Search function returns a SearchResult object, containing tasks,
+user stories and issues:
 
 ```python
-stories = api.stories.list(project_id=1)
-print (stories)
-```
-
-### Update a story
-
-```python
-new_story.description = 'New description'
-new_story.update()
-```
-
-### Delete a story
-
-```python
-new_story = api.stories.create(new_project.id, 'New Story', description='Blablablabla')
-new_story.delete()
+projects = api.projects.list()
+search_result = api.search(projects[0].id, 'NEW')
+for user_story in search_result.user_stories:
+    print (user_story)
 ```
