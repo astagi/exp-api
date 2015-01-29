@@ -123,4 +123,3 @@ class InstanceResource(Resource):
 
     def __repr__(self):
         return self.__unicode__()
-

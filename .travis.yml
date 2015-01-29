@@ -11,6 +11,9 @@ python:
 install:
   - pip install -r requirements-test.txt
 
+before_script:
+  - flake8 taiga
+
 script: nosetests --with-coverage --cover-package=taiga
 
 after_success: coveralls
