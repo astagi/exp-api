@@ -1,5 +1,6 @@
 python-taiga
-============
+==============
+[![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url]
 
 A module for using the [Taiga REST API](http://taigaio.github.io/taiga-doc/dist/api.html "Taiga REST API documentation").
 
@@ -112,3 +113,9 @@ search_result = api.search(projects[0].id, 'NEW')
 for user_story in search_result.user_stories:
     print (user_story)
 ```
+
+[travis-url]: https://travis-ci.org/nephila/python-taiga
+[travis-image]: http://img.shields.io/travis/nephila/python-taiga.svg
+
+[coveralls-url]: https://coveralls.io/r/nephila/python-taiga
+[coveralls-image]: http://img.shields.io/coveralls/nephila/python-taiga/master.svg
