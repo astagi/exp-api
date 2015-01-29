@@ -1,6 +1,29 @@
 import six
 
 
+class SearchableList(list):
+
+    def get(self, **query):
+        for obj in self:
+            ok_obj = True
+            for key, value in six.iteritems(query):
+                if key not in obj.__dict__ or obj.__dict__[key] != value:
+                    ok_obj = False
+            if ok_obj:
+                return obj
+
+    def filter(self, **query):
+        result_objs = []
+        for obj in self:
+            ok_obj = True
+            for key, value in six.iteritems(query):
+                if key not in obj.__dict__ or obj.__dict__[key] != value:
+                    ok_obj = False
+            if ok_obj:
+                result_objs.append(obj)
+        return result_objs
+
+
 class Resource(object):
 
     def __init__(self, requester):
@@ -39,14 +62,14 @@ class ListResource(Resource):
     @classmethod
     def parse(cls, requester, entries):
         """Parse a JSON array into a list of model instances."""
-        result_entries = []
+        result_entries = SearchableList()
         for entry in entries:
             result_entries.append(cls.instance.parse(requester, entry))
         return result_entries
 
     def parse_list(self, entries):
         """Parse a JSON array into a list of model instances."""
-        result_entries = []
+        result_entries = SearchableList()
         for entry in entries:
             result_entries.append(self.instance.parse(self.requester, entry))
         return result_entries

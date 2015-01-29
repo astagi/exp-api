@@ -1,5 +1,5 @@
 from taiga.requestmaker import RequestMaker, RequestMakerException
-from taiga.models.base import InstanceResource, ListResource
+from taiga.models.base import InstanceResource, ListResource, SearchableList
 import taiga.exceptions
 import json
 import requests
@@ -78,3 +78,31 @@ class TestModelBase(unittest.TestCase):
         expected_dict = {'param1':'one', 'param2':'two'}
         self.assertEqual(len(fake.to_dict()), 2)
         self.assertEqual(fake.to_dict(), expected_dict)
+
+    def test_searchable_list_filter(self):
+        rm = RequestMaker('/api/v1', 'fakehost', 'faketoken')
+        fake1 = Fake(rm, id=1, param1='one', param2='a')
+        fake2 = Fake(rm, id=1, param1='one', param2='b')
+        fake3 = Fake(rm, id=1, param1='two', param2='c')
+        searchable_list = SearchableList()
+        searchable_list.append(fake1)
+        searchable_list.append(fake2)
+        searchable_list.append(fake3)
+        self.assertEqual(len(searchable_list.filter(param1='one')), 2)
+        self.assertEqual(len(searchable_list.filter(param1='notexists')), 0)
+        self.assertEqual(len(searchable_list.filter(param1='one', param2='a')), 1)
+        self.assertEqual(len(searchable_list.filter()), 3)
+
+    def test_searchable_list_get(self):
+        rm = RequestMaker('/api/v1', 'fakehost', 'faketoken')
+        fake1 = Fake(rm, id=1, param1='one', param2='a')
+        fake2 = Fake(rm, id=1, param1='one', param2='b')
+        fake3 = Fake(rm, id=1, param1='two', param2='c')
+        searchable_list = SearchableList()
+        searchable_list.append(fake1)
+        searchable_list.append(fake2)
+        searchable_list.append(fake3)
+        self.assertTrue(searchable_list.get(param1='one'))
+        self.assertFalse(searchable_list.get(param1='notexists'), 0)
+        self.assertTrue(searchable_list.get(param1='one', param2='a'), 1)
+        self.assertTrue(searchable_list.get())
