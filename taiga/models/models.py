@@ -6,7 +6,7 @@ class User(InstanceResource):
 
     endpoint = 'users'
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0} ({1})'.format(self.username, self.full_name)
 
     def starred_projects(self):
@@ -28,7 +28,7 @@ class Priority(InstanceResource):
 
     allowed_params = ['name', 'color', 'order', 'project']
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.name)
 
 
@@ -48,7 +48,7 @@ class Attachment(InstanceResource):
         'description', 'is_deprecated'
     ]
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.subject)
 
 
@@ -99,7 +99,7 @@ class UserStory(InstanceResource):
             subject, attached_file, **attrs
         )
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.subject)
 
 
@@ -120,7 +120,7 @@ class UserStoryStatus(InstanceResource):
         'color', 'is_closed', 'name', 'order', 'project', 'wip_limit'
     ]
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.subject)
 
 
@@ -139,7 +139,7 @@ class Point(InstanceResource):
 
     allowed_params = ['color', 'value', 'name', 'order', 'project']
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.subject)
 
 
@@ -165,7 +165,7 @@ class Milestone(InstanceResource):
         'user_stories': UserStories,
     }
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.name)
 
 
@@ -194,7 +194,7 @@ class TaskStatus(InstanceResource):
 
     allowed_params = ['name', 'color', 'order', 'project', 'is_closed']
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.name)
 
 
@@ -234,7 +234,7 @@ class Task(InstanceResource):
             subject, attached_file, **attrs
         )
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.subject)
 
 
@@ -258,7 +258,7 @@ class IssueType(InstanceResource):
 
     allowed_params = ['name', 'color', 'order', 'project']
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.name)
 
 
@@ -277,7 +277,7 @@ class IssueStatus(InstanceResource):
 
     allowed_params = ['name', 'color', 'order', 'project', 'is_closed']
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.name)
 
 
@@ -330,7 +330,7 @@ class Issue(InstanceResource):
             subject, attached_file, **attrs
         )
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.subject)
 
 
@@ -356,7 +356,7 @@ class Severity(InstanceResource):
 
     allowed_params = ['name', 'color', 'order', 'project']
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.name)
 
 
@@ -392,7 +392,7 @@ class Project(InstanceResource):
         'us_statuses': UserStoryStatuses
     }
 
-    def __str__(self):
+    def __unicode__(self):
         return '{0}'.format(self.name)
 
     def star(self):

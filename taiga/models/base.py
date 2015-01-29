@@ -86,6 +86,8 @@ class InstanceResource(Resource):
     def __init__(self, requester, **params):
         self.requester = requester
         for key, value in six.iteritems(params):
+            if six.PY2 and isinstance(value, six.string_types):
+                value = value.encode('utf-8')
             setattr(self, key, value)
 
     def update(self):
@@ -120,10 +122,5 @@ class InstanceResource(Resource):
         return cls(requester, **entry)
 
     def __repr__(self):
-        return str(self)
+        return self.__unicode__()
 
-    def __str__(self):
-        if six.PY3:
-            return self.__unicode__()
-        else:
-            return unicode(self).encode('utf-8')
