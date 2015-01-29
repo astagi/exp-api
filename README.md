@@ -70,14 +70,24 @@ userstory = new_project.add_user_story(
 )
 ```
 
+To add a task to your user story just run
+
+```python
+userstory.add_task('New Task 2',
+    new_project.task_statuses[0].id
+)
+```
+
 ### Create an issue
 
 ```python
 newissue = new_project.add_issue(
-    'New Issue', new_project.priorities[1].id,
-    new_project.issue_statuses[0].id,
-    new_project.issue_types[0].id,
-    new_project.severities[0].id, description='Bug #5'
+    'New Issue',
+    new_project.priorities.get(name='High').id,
+    new_project.issue_statuses.get(name='New').id,
+    new_project.issue_types.get(name='Bug').id,
+    new_project.severities.get(name='Minor').id,
+    description='Bug #5'
 )
 ```
 
@@ -100,6 +110,23 @@ You can attach files to issues, user stories and tasks
 
 ```python
 newissue.attach('Read the README in Issue', 'README.md')
+```
+
+### Play with instances
+
+Instances can have actions, for example you can star a project just calling
+
+```python
+new_project = api.projects.create('TEST PROJECT', 'TESTING API')
+new_project.star()
+```
+
+An instance can be updated and deleted
+
+```python
+new_project.name = 'New name for my project'
+new_project.update()
+new_project.delete()
 ```
 
 ### Search
