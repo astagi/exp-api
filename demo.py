@@ -19,7 +19,7 @@ jan_feb_milestone = new_project.add_milestone(
 )
 
 userstory = new_project.add_user_story(
-    'Flügel Story', description='Blablablabla',
+    'New Story', description='Blablablabla',
     milestone=jan_feb_milestone.id
 )
 userstory.attach('Read the README in User Story', 'README.md')
@@ -33,9 +33,9 @@ print (userstory.list_tasks())
 newissue = new_project.add_issue(
     'New Issue',
     new_project.priorities.get(name='High').id,
-	new_project.issue_statuses.get(name='New').id,
-	new_project.issue_types.get(name='Bug').id,
-	new_project.severities.get(name='Minor').id,
+    new_project.issue_statuses.get(name='New').id,
+    new_project.issue_types.get(name='Bug').id,
+    new_project.severities.get(name='Minor').id,
     description='Bug #5'
 ).attach('Read the README in Issue', 'README.md')
 
